@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RSpec results</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Expires" content="-1" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 80%;
+  }
+  </style>
+  <script type="text/javascript">
+    // <![CDATA[
+
+function addClass(element_id, classname) {
+  document.getElementById(element_id).className += (" " + classname);
+}
+
+function removeClass(element_id, classname) {
+  var elem = document.getElementById(element_id);
+  var classlist = elem.className.replace(classname,'');
+  elem.className = classlist;
+}
+
+function moveProgressBar(percentDone) {
+  document.getElementById("rspec-header").style.width = percentDone +"%";
+}
+
+function makeRed(element_id) {
+  removeClass(element_id, 'passed');
+  removeClass(element_id, 'not_implemented');
+  addClass(element_id,'failed');
+}
+
+function makeYellow(element_id) {
+  var elem = document.getElementById(element_id);
+  if (elem.className.indexOf("failed") == -1) {  // class doesn't includes failed
+    if (elem.className.indexOf("not_implemented") == -1) { // class doesn't include not_implemented
+      removeClass(element_id, 'passed');
+      addClass(element_id,'not_implemented');
+    }
+  }
+}
+
+function apply_filters() {
+  var passed_filter = document.getElementById('passed_checkbox').checked;
+  var failed_filter = document.getElementById('failed_checkbox').checked;
+  var pending_filter = document.getElementById('pending_checkbox').checked;
+
+  assign_display_style("example passed", passed_filter);
+  assign_display_style("example failed", failed_filter);
+  assign_display_style("example not_implemented", pending_filter);
+
+  assign_display_style_for_group("example_group passed", passed_filter);
+  assign_display_style_for_group("example_group not_implemented", pending_filter, pending_filter || passed_filter);
+  assign_display_style_for_group("example_group failed", failed_filter, failed_filter || pending_filter || passed_filter);
+}
+
+function get_display_style(display_flag) {
+  var style_mode = 'none';
+  if (display_flag == true) {
+    style_mode = 'block';
+  }
+  return style_mode;
+}
+
+function assign_display_style(classname, display_flag) {
+  var style_mode = get_display_style(display_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    elems[i].style.display = style_mode;
+  }
+}
+
+function assign_display_style_for_group(classname, display_flag, subgroup_flag) {
+  var display_style_mode = get_display_style(display_flag);
+  var subgroup_style_mode = get_display_style(subgroup_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    var style_mode = display_style_mode;
+    if ((display_flag != subgroup_flag) && (elems[i].getElementsByTagName('dt')[0].innerHTML.indexOf(", ") != -1)) {
+      elems[i].style.display = subgroup_style_mode;
+    } else {
+      elems[i].style.display = display_style_mode;
+    }
+  }
+}
+
+    // ]]>
+  </script>
+  <style type="text/css">
+#rspec-header {
+  background: #65C400; color: #fff; height: 4em;
+}
+
+.rspec-report h1 {
+  margin: 0px 10px 0px 10px;
+  padding: 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  font-size: 1.8em;
+  position: absolute;
+}
+
+#label {
+  float:left;
+}
+
+#display-filters {
+  float:left;
+  padding: 28px 0 0 40%;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+}
+
+#summary {
+  float:right;
+  padding: 5px 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  text-align: right;
+}
+
+#summary p {
+  margin: 0 0 0 2px;
+}
+
+#summary #totals {
+  font-size: 1.2em;
+}
+
+.example_group {
+  margin: 0 10px 5px;
+  background: #fff;
+}
+
+dl {
+  margin: 0; padding: 0 0 5px;
+  font: normal 11px "Lucida Grande", Helvetica, sans-serif;
+}
+
+dt {
+  padding: 3px;
+  background: #65C400;
+  color: #fff;
+  font-weight: bold;
+}
+
+dd {
+  margin: 5px 0 5px 5px;
+  padding: 3px 3px 3px 18px;
+}
+
+dd .duration {
+  padding-left: 5px;
+  text-align: right;
+  right: 0px;
+  float:right;
+}
+
+dd.example.passed {
+  border-left: 5px solid #65C400;
+  border-bottom: 1px solid #65C400;
+  background: #DBFFB4; color: #3D7700;
+}
+
+dd.example.not_implemented {
+  border-left: 5px solid #FAF834;
+  border-bottom: 1px solid #FAF834;
+  background: #FCFB98; color: #131313;
+}
+
+dd.example.pending_fixed {
+  border-left: 5px solid #0000C2;
+  border-bottom: 1px solid #0000C2;
+  color: #0000C2; background: #D3FBFF;
+}
+
+dd.example.failed {
+  border-left: 5px solid #C20000;
+  border-bottom: 1px solid #C20000;
+  color: #C20000; background: #FFFBD3;
+}
+
+
+dt.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+dt.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+dt.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+
+#rspec-header.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+#rspec-header.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+#rspec-header.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+
+.backtrace {
+  color: #000;
+  font-size: 12px;
+}
+
+a {
+  color: #BE5C00;
+}
+
+/* Ruby code, style similar to vibrant ink */
+.ruby {
+  font-size: 12px;
+  font-family: monospace;
+  color: white;
+  background-color: black;
+  padding: 0.1em 0 0.2em 0;
+}
+
+.ruby .keyword { color: #FF6600; }
+.ruby .constant { color: #339999; }
+.ruby .attribute { color: white; }
+.ruby .global { color: white; }
+.ruby .module { color: white; }
+.ruby .class { color: white; }
+.ruby .string { color: #66FF00; }
+.ruby .ident { color: white; }
+.ruby .method { color: #FFCC00; }
+.ruby .number { color: white; }
+.ruby .char { color: white; }
+.ruby .comment { color: #9933CC; }
+.ruby .symbol { color: white; }
+.ruby .regex { color: #44B4CC; }
+.ruby .punct { color: white; }
+.ruby .escape { color: white; }
+.ruby .interp { color: white; }
+.ruby .expr { color: white; }
+
+.ruby .offending { background-color: gray; }
+.ruby .linenum {
+  width: 75px;
+  padding: 0.1em 1em 0.2em 0;
+  color: #000000;
+  background-color: #FFFBD3;
+}
+
+  </style>
+</head>
+<body>
+<div class="rspec-report">
+
+<div id="rspec-header">
+  <div id="label">
+    <h1>RSpec Code Examples</h1>
+  </div>
+
+  <div id="display-filters">
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
+  </div>
+
+  <div id="summary">
+    <p id="totals">&#160;</p>
+    <p id="duration">&#160;</p>
+  </div>
+</div>
+
+
+<div class="results">
+<div id="div_group_1" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_1" class="passed">Login Tests</dt>
+  </dl>
+</div>
+<div id="div_group_2" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_2" class="passed">Login with password</dt>
+  </dl>
+</div>
+<div id="div_group_3" class="example_group passed">
+  <dl style="margin-left: 30px;">
+  <dt id="example_group_3" class="passed">when logging in as standard_user</dt>
+    <script type="text/javascript">moveProgressBar('4.1');</script>
+    <dd class="example passed"><span class="passed_spec_name">logs in successfully</span><span class='duration'>4.74896s</span></dd>
+    <script type="text/javascript">moveProgressBar('8.3');</script>
+    <dd class="example passed"><span class="passed_spec_name">can add 4 items to the cart</span><span class='duration'>1.73097s</span></dd>
+    <script type="text/javascript">moveProgressBar('12.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">can add one item to the cart and remove it</span><span class='duration'>1.34435s</span></dd>
+    <script type="text/javascript">moveProgressBar('16.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">has proper first item name and img in both list and item pages</span><span class='duration'>1.20337s</span></dd>
+  </dl>
+</div>
+<div id="div_group_4" class="example_group passed">
+  <dl style="margin-left: 30px;">
+  <dt id="example_group_4" class="passed">when logging in as locked_out_user</dt>
+    <script type="text/javascript">makeRed('rspec-header');</script>
+    <script type="text/javascript">makeRed('div_group_4');</script>
+    <script type="text/javascript">makeRed('example_group_4');</script>
+    <script type="text/javascript">moveProgressBar('20.8');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">logs in successfully</span>
+      <span class="duration">2.82297s</span>
+      <div class="failure" id="failure_1">
+        <div class="message"><pre>  Failure/Error: account_header = find(&#39;.app_logo&#39;, text: &#39;Swag Labs&#39;)
+
+  Capybara::ElementNotFound:
+    Unable to find css &quot;.app_logo&quot;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:312:in `block in synced_resolve&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/base.rb:84:in `synchronize&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:301:in `synced_resolve&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:60:in `find&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/session.rb:774:in `find&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `call&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `find&#39;
+  # ./spec/login_page_spec.rb:28:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:312:in `block in synced_resolve&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/base.rb:84:in `synchronize&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:301:in `synced_resolve&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:60:in `find&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/session.rb:774:in `find&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `call&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `find&#39;
+./spec/login_page_spec.rb:28:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">310</span>            raise Capybara::Ambiguous, "Ambiguous match, found #{result.size} elements matching #{query.applied_description}"
+<span class="linenum">311</span>          end
+<span class="offending"><span class="linenum">312</span>          raise Capybara::ElementNotFound, "Unable to find #{query.applied_description}" if result.empty?</span>
+<span class="linenum">313</span>
+<span class="linenum">314</span>          result.first
+<span class="linenum">315</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('25.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">can add 4 items to the cart</span>
+      <span class="duration">4.79896s</span>
+      <div class="failure" id="failure_2">
+        <div class="message"><pre>  Failure/Error: cart = find(&#39;span[data-test=&quot;shopping-cart-badge&quot;]&#39;, visible: true)
+
+  Capybara::ElementNotFound:
+    Unable to find css &quot;span[data-test=\&quot;shopping-cart-badge\&quot;]&quot;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:312:in `block in synced_resolve&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/base.rb:84:in `synchronize&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:301:in `synced_resolve&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:60:in `find&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/session.rb:774:in `find&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `call&#39;
+  # C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `find&#39;
+  # ./spec/login_page_spec.rb:41:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:312:in `block in synced_resolve&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/base.rb:84:in `synchronize&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:301:in `synced_resolve&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/node/finders.rb:60:in `find&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/session.rb:774:in `find&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `call&#39;
+C:/Users/User/.local/share/gem/ruby/3.3.0/gems/capybara-3.40.0/lib/capybara/dsl.rb:52:in `find&#39;
+./spec/login_page_spec.rb:41:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">310</span>            raise Capybara::Ambiguous, "Ambiguous match, found #{result.size} elements matching #{query.applied_description}"
+<span class="linenum">311</span>          end
+<span class="offending"><span class="linenum">312</span>          raise Capybara::ElementNotFound, "Unable to find #{query.applied_description}" if result.empty?</span>
+<span class="linenum">313</span>
+<span class="linenum">314</span>          result.first
+<span class="linenum">315</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('29.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">can add one item to the cart and remove it</span>
+      <span class="duration">2.81116s</span>
+      <div class="failure" id="failure_3">
+        <div class="message"><pre>  Failure/Error: all(&#39;button.btn_primary.btn_inventory&#39;)[0].click
+
+  NoMethodError:
+    undefined method `click&#39; for nil
+  # ./spec/login_page_spec.rb:46:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:46:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">44</span>
+<span class="linenum">45</span>        it 'can add one item to the cart and remove it' do
+<span class="offending"><span class="linenum">46</span>          all('button.btn_primary.btn_inventory')[0].click</span>
+<span class="linenum">47</span>          cart = find('span[data-test="shopping-cart-badge"]', visible: true)
+<span class="linenum">48</span>          expect(cart.text).to eql "1"
+<span class="linenum">49</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('33.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">has proper first item name and img in both list and item pages</span>
+      <span class="duration">2.81112s</span>
+      <div class="failure" id="failure_4">
+        <div class="message"><pre>  Failure/Error: list_item_name = all(&#39;div[data-test=&quot;inventory-item-name&quot;]&#39;, visible: true)[0].text
+
+  NoMethodError:
+    undefined method `text&#39; for nil
+  # ./spec/login_page_spec.rb:55:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:55:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">53</span>
+<span class="linenum">54</span>        it 'has proper first item name and img in both list and item pages' do
+<span class="offending"><span class="linenum">55</span>          list_item_name = all('div[data-test="inventory-item-name"]', visible: true)[0].text</span>
+<span class="linenum">56</span>          list_item_img_src = all('img.inventory_item_img', visible: true)[0]['src']
+<span class="linenum">57</span>
+<span class="linenum">58</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_5" class="example_group passed">
+  <dl style="margin-left: 30px;">
+  <dt id="example_group_5" class="passed">when logging in as problem_user</dt>
+    <script type="text/javascript">moveProgressBar('37.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">logs in successfully</span><span class='duration'>0.83047s</span></dd>
+    <script type="text/javascript">makeRed('div_group_5');</script>
+    <script type="text/javascript">makeRed('example_group_5');</script>
+    <script type="text/javascript">moveProgressBar('41.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">can add 4 items to the cart</span>
+      <span class="duration">1.82777s</span>
+      <div class="failure" id="failure_5">
+        <div class="message"><pre>  Failure/Error: expect(cart.text).to eql &quot;4&quot;
+
+    expected: &quot;4&quot;
+         got: &quot;2&quot;
+
+    (compared using eql?)
+  # ./spec/login_page_spec.rb:42:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:42:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">40</span>
+<span class="linenum">41</span>          cart = find('span[data-test="shopping-cart-badge"]', visible: true)
+<span class="offending"><span class="linenum">42</span>          expect(cart.text).to eql "4"</span>
+<span class="linenum">43</span>        end
+<span class="linenum">44</span>
+<span class="linenum">45</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('45.8');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">can add one item to the cart and remove it</span>
+      <span class="duration">3.44507s</span>
+      <div class="failure" id="failure_6">
+        <div class="message"><pre>  Failure/Error: expect(page).to have_no_selector(&#39;span[data-test=&quot;shopping-cart-badge&quot;]&#39;, visible: true)
+    expected `#&lt;Capybara::Session&gt;.has_no_selector?(&quot;span[data-test=\&quot;shopping-cart-badge\&quot;]&quot;, {:visible=&gt;true})` to be truthy, got false
+  # ./spec/login_page_spec.rb:51:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:51:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">49</span>          
+<span class="linenum">50</span>          all('button.btn_secondary.btn_inventory')[0].click
+<span class="offending"><span class="linenum">51</span>          expect(page).to have_no_selector('span[data-test="shopping-cart-badge"]', visible: true)</span>
+<span class="linenum">52</span>        end
+<span class="linenum">53</span>
+<span class="linenum">54</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('50.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">has proper first item name and img in both list and item pages</span>
+      <span class="duration">1.23631s</span>
+      <div class="failure" id="failure_7">
+        <div class="message"><pre>  Failure/Error: expect(single_item_name.text).to eql list_item_name
+
+    expected: &quot;Sauce Labs Backpack&quot;
+         got: &quot;Sauce Labs Fleece Jacket&quot;
+
+    (compared using eql?)
+  # ./spec/login_page_spec.rb:61:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:61:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">59</span>          
+<span class="linenum">60</span>          single_item_name = find('div[data-test="inventory-item-name"]', visible: true)
+<span class="offending"><span class="linenum">61</span>          expect(single_item_name.text).to eql list_item_name</span>
+<span class="linenum">62</span>          
+<span class="linenum">63</span>          single_item_img = find('.inventory_details_img', visible: true)
+<span class="linenum">64</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_6" class="example_group passed">
+  <dl style="margin-left: 30px;">
+  <dt id="example_group_6" class="passed">when logging in as performance_glitch_user</dt>
+    <script type="text/javascript">moveProgressBar('54.1');</script>
+    <dd class="example passed"><span class="passed_spec_name">logs in successfully</span><span class='duration'>5.86240s</span></dd>
+    <script type="text/javascript">moveProgressBar('58.3');</script>
+    <dd class="example passed"><span class="passed_spec_name">can add 4 items to the cart</span><span class='duration'>6.71607s</span></dd>
+    <script type="text/javascript">moveProgressBar('62.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">can add one item to the cart and remove it</span><span class='duration'>6.34177s</span></dd>
+    <script type="text/javascript">moveProgressBar('66.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">has proper first item name and img in both list and item pages</span><span class='duration'>6.17944s</span></dd>
+  </dl>
+</div>
+<div id="div_group_7" class="example_group passed">
+  <dl style="margin-left: 30px;">
+  <dt id="example_group_7" class="passed">when logging in as error_user</dt>
+    <script type="text/javascript">moveProgressBar('70.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">logs in successfully</span><span class='duration'>0.82551s</span></dd>
+    <script type="text/javascript">makeRed('div_group_7');</script>
+    <script type="text/javascript">makeRed('example_group_7');</script>
+    <script type="text/javascript">moveProgressBar('75.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">can add 4 items to the cart</span>
+      <span class="duration">1.79698s</span>
+      <div class="failure" id="failure_8">
+        <div class="message"><pre>  Failure/Error: expect(cart.text).to eql &quot;4&quot;
+
+    expected: &quot;4&quot;
+         got: &quot;2&quot;
+
+    (compared using eql?)
+  # ./spec/login_page_spec.rb:42:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:42:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">40</span>
+<span class="linenum">41</span>          cart = find('span[data-test="shopping-cart-badge"]', visible: true)
+<span class="offending"><span class="linenum">42</span>          expect(cart.text).to eql "4"</span>
+<span class="linenum">43</span>        end
+<span class="linenum">44</span>
+<span class="linenum">45</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('79.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">can add one item to the cart and remove it</span>
+      <span class="duration">3.42357s</span>
+      <div class="failure" id="failure_9">
+        <div class="message"><pre>  Failure/Error: expect(page).to have_no_selector(&#39;span[data-test=&quot;shopping-cart-badge&quot;]&#39;, visible: true)
+    expected `#&lt;Capybara::Session&gt;.has_no_selector?(&quot;span[data-test=\&quot;shopping-cart-badge\&quot;]&quot;, {:visible=&gt;true})` to be truthy, got false
+  # ./spec/login_page_spec.rb:51:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:51:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">49</span>          
+<span class="linenum">50</span>          all('button.btn_secondary.btn_inventory')[0].click
+<span class="offending"><span class="linenum">51</span>          expect(page).to have_no_selector('span[data-test="shopping-cart-badge"]', visible: true)</span>
+<span class="linenum">52</span>        end
+<span class="linenum">53</span>
+<span class="linenum">54</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('83.3');</script>
+    <dd class="example passed"><span class="passed_spec_name">has proper first item name and img in both list and item pages</span><span class='duration'>1.79554s</span></dd>
+  </dl>
+</div>
+<div id="div_group_8" class="example_group passed">
+  <dl style="margin-left: 30px;">
+  <dt id="example_group_8" class="passed">when logging in as visual_user</dt>
+    <script type="text/javascript">moveProgressBar('87.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">logs in successfully</span><span class='duration'>0.85918s</span></dd>
+    <script type="text/javascript">moveProgressBar('91.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">can add 4 items to the cart</span><span class='duration'>1.69615s</span></dd>
+    <script type="text/javascript">moveProgressBar('95.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">can add one item to the cart and remove it</span><span class='duration'>1.37772s</span></dd>
+    <script type="text/javascript">makeRed('div_group_8');</script>
+    <script type="text/javascript">makeRed('example_group_8');</script>
+    <script type="text/javascript">moveProgressBar('100.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">has proper first item name and img in both list and item pages</span>
+      <span class="duration">1.25116s</span>
+      <div class="failure" id="failure_10">
+        <div class="message"><pre>  Failure/Error: expect(single_item_img[&#39;src&#39;]).to eql list_item_img_src
+
+    expected: &quot;https://www.saucedemo.com/static/media/sl-404.168b1cce.jpg&quot;
+         got: &quot;https://www.saucedemo.com/static/media/sauce-backpack-1200x1500.0a0b85a3.jpg&quot;
+
+    (compared using eql?)
+  # ./spec/login_page_spec.rb:64:in `block (5 levels) in &lt;top (required)&gt;&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+  # C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+        <div class="backtrace"><pre>./spec/login_page_spec.rb:64:in `block (5 levels) in &lt;top (required)&gt;&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `load&#39;
+C:/Users/User/AppData/Local/Microsoft/WindowsApps/rspec:25:in `&lt;main&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">62</span>          
+<span class="linenum">63</span>          single_item_img = find('.inventory_details_img', visible: true)
+<span class="offending"><span class="linenum">64</span>          expect(single_item_img['src']).to eql list_item_img_src</span>
+<span class="linenum">65</span>        end
+<span class="linenum">66</span>      end
+<span class="linenum">67</span><span class="comment"># Install the coderay gem to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>67.83346 seconds</strong>";</script>
+<script type="text/javascript">document.getElementById('totals').innerHTML = "24 examples, 10 failures";</script>
+</div>
+</div>
+</body>
+</html>
